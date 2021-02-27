@@ -87,6 +87,12 @@ class ListViewTest(TestCase):
         self.assertNotContains(response, 'other list item 1')
         self.assertNotContains(response, 'other list item 2')
 
+    def test_passes_correct_list_to_template(self):
+        other_list = List.objects.create()
+        correct_list = List.objects.create()
+        response = self.client.get('/lists/'+ str(correct_list.id) + '/')
+        self.assertEqual(response.context['list'], correct_list)
+
 
 class NewItemTest(TestCase):
 
@@ -95,7 +101,7 @@ class NewItemTest(TestCase):
         correct_list = List.objects.create()
 
         self.client.post(
-            '/lists/'+ str(correct_list.id) + '/add_item',
+            '/lists/' + str(correct_list.id) + '/add_item',
             data={'item_text': 'A new item for an existing list'}
         )
 
@@ -109,8 +115,8 @@ class NewItemTest(TestCase):
         correct_list = List.objects.create()
 
         response = self.client.post(
-            '/lists/'+ str(correct_list.id) + '/add_item',
+            '/lists/' + str(correct_list.id) + '/add_item',
             data={'item_text': 'A new item for an existing list'}
         )
 
-        self.assertRedirects(response, '/lists/' + str(correct_list.id) +'/')
+        self.assertRedirects(response, '/lists/' + str(correct_list.id) + '/')
